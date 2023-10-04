@@ -54,11 +54,18 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         TME = 0
     }
 })
+sprites.onOverlap(SpriteKind.x, SpriteKind.Food, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    for (let index = 0; index < 10; index++) {
+        info.changeScoreBy(1)
+    }
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     game.setGameOverMessage(true, "GAME OVER!")
     game.gameOver(true)
 })
 let enemy_: Sprite = null
+let food_: Sprite = null
 let TME = 0
 let projectile: Sprite = null
 let player_: Sprite = null
@@ -204,9 +211,31 @@ player_ = sprites.create(img`
     `, SpriteKind.Player)
 player_.setPosition(80, 95)
 controller.moveSprite(player_, 100, 0)
+game.onUpdateInterval(5000, function () {
+    food_ = sprites.createProjectileFromSide(img`
+        . . . . . . . e c 7 . . . . . . 
+        . . . . e e e c 7 7 e e . . . . 
+        . . c e e e e c 7 e 2 2 e e . . 
+        . c e e e e e c 6 e e 2 2 2 e . 
+        . c e e e 2 e c c 2 4 5 4 2 e . 
+        c e e e 2 2 2 2 2 2 4 5 5 2 2 e 
+        c e e 2 2 2 2 2 2 2 2 4 4 2 2 e 
+        c e e 2 2 2 2 2 2 2 2 2 2 2 2 e 
+        c e e 2 2 2 2 2 2 2 2 2 2 2 2 e 
+        c e e 2 2 2 2 2 2 2 2 2 2 2 2 e 
+        c e e 2 2 2 2 2 2 2 2 2 2 4 2 e 
+        . e e e 2 2 2 2 2 2 2 2 2 4 e . 
+        . 2 e e 2 2 2 2 2 2 2 2 4 2 e . 
+        . . 2 e e 2 2 2 2 2 4 4 2 e . . 
+        . . . 2 2 e e 4 4 4 2 e e . . . 
+        . . . . . 2 2 e e e e . . . . . 
+        `, 0, 100)
+    food_.x = randint(20, 140)
+    food_.y = 0
+    food_.setKind(SpriteKind.Food)
+})
 game.onUpdateInterval(1000, function () {
     TME += 1
-    game.splash("x")
 })
 game.onUpdateInterval(500, function () {
     enemy_ = sprites.createProjectileFromSide(img`
